@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="testscriptFlow" doc:id="37c5dacf-d322-4302-8f2f-493a5975d7e0" >
+		<ee:transform doc:name="Transform Message" doc:id="dcd3e5ec-f178-4530-a9a7-b3054fe323d7" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="01_concatenate_strings.dwl" ><![CDATA[%dw 2.0
+output application/json
+---
+{ myString: ("hello" ++ "World") }]]></ee:set-variable>
+				<ee:set-variable variableName="02_json_to_xml.dwl" ><![CDATA[%dw 2.0
+output application/xml
+---
+{ myString: ("hello" ++ "World") }]]></ee:set-variable>
+				<ee:set-variable variableName="03_supported_datatypes.dwl" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+  /*
+   * A multi-line
+   * comment here.
+   */
+  myString: "hello world",
+  myNumber: 123,
+  myFloatingPointNumber: 123.456,
+  myVeryBigNumber: 12341234134123412341234123,
+  myDate: |2018-12-07|,
+  myTime: |11:55:56|,
+  myDateTime: |2018-10-01T23:57:59-03:00|,
+  myBoolean: true,
+  myArray: [ 1, 2, 3, 5, 8],
+  myMixedArray: [ 1, 2, "blah", { hello: "there" } ],
+  myObjectKeyValuePair: { innerKey: "innerValue" },
+  myObjectWithConditionalField: { a : { b : 1, ( c : 2 ) if true, (d : 4) if false } },
+  myNull: null,
+  myBinary: "abcd1234123" as Binary
+  //A one-line comment here.
+}]]></ee:set-variable>
+				<ee:set-variable variableName="04_variable_as_input.dwl" ><![CDATA[%dw 2.0
+var myJson = {"hello": "world"}
+output application/json
+---
+myJson]]></ee:set-variable>
+				<ee:set-variable variableName="05_dw_function_in_dw_var.dwl" ><![CDATA[%dw 2.0
+var myJson = {
+	a: avg([1, 1000]),
+	b: avg([1, 2, 3])
+}
+output application/json
+---
+myJson]]></ee:set-variable>
+				<ee:set-variable variableName="06_read_transform_select_content.dwl" ><![CDATA[%dw 2.0
+var myRead = read("<car><color>red</color></car>", "application/xml")
+output application/json
+---
+{
+	mySelection: myRead.car
+}]]></ee:set-variable>
+				<ee:set-variable variableName="07_read_file_contents.dwl" ><![CDATA[%dw 2.0
+output application/json
+---
+readUrl("classpath://data/myJson.json", "application/json")]]></ee:set-variable>
+				<ee:set-variable variableName="08_map_from_array_to_object.dwl" ><![CDATA[%dw 2.0
+output application/json
+// almost the inverse of pluck
+---
+{
+	(
+		["a", "b", "c"] map ((value, index) -> {
+			(index): value
+		})
+	)
+}]]></ee:set-variable>
+				<ee:set-variable variableName="09_pluck_values_from_object_to_array.dwl" ><![CDATA[%dw 2.0
+output application/json
+// almost the inverse of map
+---
+{
+	"0": "a",
+	"1": "b",
+	"2": "c"
+} pluck ((value) -> value)]]></ee:set-variable>
+				<ee:set-variable variableName="10_map_merge_fields.dwl" ><![CDATA[%dw 2.0
+var myVar = [
+  { bookId: 101,
+    title: "world history",
+    price: "19.99"
+  },
+  {
+    bookId: 202,
+    title: 'the great outdoors',
+    price: "15.99"
+  }
+]
+var myVar2 = [
+  {
+    bookId: 101,
+    author: "john doe"
+  },
+  {
+    bookId: 202,
+    author: "jane doe"
+  }
+]
+output application/json
+---
+myVar map (item, index) -> using (id = item.bookId) { // using is a local dataweave variable
+	"id": id,
+	"topic": item.title,
+	"cost": item.price as Number,
+	(myVar2 filter ($.*bookId contains id) map (item) -> {
+		author: item.author
+	})
+}]]></ee:set-variable>
+				<ee:set-variable variableName="11_short_payloads.dwl" ><![CDATA[%dw 2.0
+var myInput = read("<root>
+    <order>
+      <items>1</items>
+      <items>3</items>
+    </order>
+    <order>
+      <items>2</items>
+    </order>
+</root>",
+"application/xml")
+output application/json
+---
+ContainsRequestedItem: myInput.root.*order.*items contains "3"]]></ee:set-variable>
+				<ee:set-variable variableName="12_longer_payloads.dwl" ><![CDATA[%dw 2.0
+output application/json
+---
+payload.hello]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+	</flow>
+	<flow name="testscriptFlow1" doc:id="448439de-c671-4d6b-8a37-fab19e5790ed" >
+		<scheduler doc:name="Scheduler" doc:id="c4d83146-6353-485a-a66c-6ea5fd86e044" >
+			<scheduling-strategy >
+				<fixed-frequency />
+			</scheduling-strategy>
+		</scheduler>
+		<set-payload value='#[output application/json --- { hello: "world" }]' doc:name="Set Payload" doc:id="14a7a5a9-3375-4fb0-8633-46b03515bb28" />
+		<logger level="INFO" doc:name="Logger" doc:id="842f4f44-284b-43e5-a90e-9d93a435b357" message="#[payload]"/>
+	</flow>
+</mule>
