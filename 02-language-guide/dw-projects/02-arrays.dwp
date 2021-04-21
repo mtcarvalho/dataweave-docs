@@ -1,0 +1,9 @@
+{
+  "inputs": [
+    {
+      "mimeType": "application/json",
+      "input": "{\n    \"hello\" : \"world\"\n}"
+    }
+  ],
+  "transformation": "%dw 2.0\noutput application/json\n---\n[(1) if true, (2) if false, (3) if payload != null]"
+}

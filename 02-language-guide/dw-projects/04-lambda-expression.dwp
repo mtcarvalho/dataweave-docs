@@ -1,0 +1,9 @@
+{
+  "inputs": [
+    {
+      "mimeType": "application/json",
+      "input": "{\n    \"hello\" : \"world\"\n}"
+    }
+  ],
+  "transformation": "%dw 2.0\noutput application/json\n---\n[\"Max\", \"the\", \"Mule\"] map (item, index) -> index ++ \" - \" ++ item"
+}

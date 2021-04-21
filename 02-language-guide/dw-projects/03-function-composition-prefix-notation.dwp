@@ -1,0 +1,9 @@
+{
+  "inputs": [
+    {
+      "mimeType": "application/json",
+      "input": "{\n    \"hello\" : \"world\"\n}"
+    }
+  ],
+  "transformation": "%dw 2.0\noutput application/json\nvar collaborators =\n{\n    Max: {role: \"admin\", id: \"01\"},\n    Einstein: {role: \"dev\", id: \"02\"},\n    Astro: {role: \"admin\", id: \"03\"},\n    Blaze: {role: \"user\", id: \"04\"}\n}\n---\nfilter(\n   pluck(\n       collaborators, (value,key,index)->\n       {\n           \"Name\": key,\n           \"Role\": upper(value.role),\n           \"ID\": value.id\n       }),\n   (item, index) -> item.Role == \"ADMIN\")"
+}

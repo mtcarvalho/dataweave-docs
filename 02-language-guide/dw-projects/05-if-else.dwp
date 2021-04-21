@@ -1,0 +1,9 @@
+{
+  "inputs": [
+    {
+      "mimeType": "application/json",
+      "input": "{\n    \"hello\" : \"world\"\n}"
+    }
+  ],
+  "transformation": "%dw 2.0\nvar myVar = { country : \"FRANCE\" }\noutput application/json\n---\nif (myVar.country == \"USA\")\n  { currency: \"USD\" }\nelse { currency: \"EUR\" }"
+}

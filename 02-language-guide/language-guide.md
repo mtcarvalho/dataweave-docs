@@ -1,7 +1,6 @@
 # Dataweave Language Guide Notes
 
 - DataWeave is a functional language used in Mule applications to perform data transformations.
-- DW enables you to take advantage of the benefits of functional programming: pure functions, immutable variables, function signatures, concise and clear code, call-by-need strategy (lazy evaluation)
 
 ## DW Script
 
@@ -33,7 +32,7 @@ enable to access fields within a data structure so you can retrieve data from pa
 ## Functions
 
 
-- **every function returns a value** after it finishes processing, and this value can then be used as input for a different function.
+- **every function returns a value** after it finishes processing, and this value can then be used as input for a different function. in DW, functions aren't imperative statements that change program states.
 - each DW script that you write in **any** component works as an **independent** program, meaning that all function definitions and calls are unique to the script defined in the component.
 -  function definition vs. function call
 	- in DW, you **define** functions in the header of the script, creating a blueprint for the process that defines the operations that are executed upon the function call.
@@ -65,3 +64,50 @@ output application/json
 ---
 [(1) if true, (2) if false, (3) if payload != null]
 ``` 
+
+## DW and Functional Programming
+
+- DW enables you to take advantage of the benefits of functional programming: pure functions, immutable variables and data, function signatures, concise and clear code, call-by-need strategy (lazy evaluation), first-class functions, high-order functions, function composition and lambda expressions
+  - example of function composition:
+  in this case, the result of executing one function ( `pluck`) serves as an input parameter for the next function ( `filter`).
+```
+%dw 2.0
+output application/json
+var collaborators =
+{
+	Max: {role: "admin", id: "01"},
+	Einstein: {role: "dev", id: "02"},
+	Astro: {role: "admin", id: "03"},
+	Blaze: {role: "user", id: "04"}
+}
+---
+collaborators pluck ((value,key,index)->  {
+		"Name": key,
+		"Role": upper(value.role),
+		"ID": value.id
+	})
+	filter ((item, index) -> item.Role == "ADMIN")
+```
+
+  - example of function composition with prefix notation (explained better on [functions](#functions) section)
+```
+%dw 2.0
+output application/json
+var collaborators =
+{
+    Max: {role: "admin", id: "01"},
+    Einstein: {role: "dev", id: "02"},
+    Astro: {role: "admin", id: "03"},
+    Blaze: {role: "user", id: "04"}
+}
+---
+filter(
+   pluck(
+       collaborators, (value,key,index)->
+       {
+           "Name": key,
+           "Role": upper(value.role),
+           "ID": value.id
+       }),
+   (item, index) -> item.Role == "ADMIN")
+```
