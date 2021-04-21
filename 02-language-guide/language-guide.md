@@ -111,3 +111,26 @@ filter(
        }),
    (item, index) -> item.Role == "ADMIN")
 ```
+
+  - example of lambda expression:
+```
+%dw 2.0
+output application/json
+---
+["Max", "the", "Mule"] map (item, index) -> index ++ " - " ++ item
+```
+
+### Differences with Imperative Programming
+
+- functional programming separates data from functions: each function works only with the data you provide as input. if you need to modify any existing data structure, you **create a new copy** and **apply functions to modify its values**.
+- functional programming does not use loop control statements. there are no loop control statements like `for` or `while` in DW. however, you can use `if-else` statements to apply a condition when executing an expression:
+
+```
+%dw 2.0
+var myVar = { country : "FRANCE" }
+output application/json
+---
+if (myVar.country == "USA")
+  { currency: "USD" }
+else { currency: "EUR" }
+```
