@@ -5,11 +5,11 @@
 ## DW Script
 
 header and body, separated by three dashes ( `---`)
-- header: contains language directives, including 
+- header (optional): contains language directives that apply to the body expression, including 
 	- the output format of the transformation
 	- variables and function declarations
 	- [importing](#import-function-modules) of prebuilt DW modules with functions available to use in scripts
-- body: contains the expression to generate a result (data mapping or transformation)
+- body (required): contains the expression to generate a result/output (data mapping or transformation)
   example:
 ```
 %dw 2.0   
