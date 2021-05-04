@@ -61,5 +61,7 @@
 ### Including Headers in Inline DataWeave Scripts
 
 - You can include it by flattening all the lines in the (small) DW script into a single line. Example:
-    `<set-payload value="#[output application/xml --- { myroot: payload } ]" doc:name="Set Payload" />`
+    ```
+    <set-payload value="#[output application/xml --- { myroot: payload } ]" doc:name="Set Payload" />
+    ```
 
