@@ -1,0 +1,9 @@
+{
+  "inputs": [
+    {
+      "mimeType": "application/json",
+      "input": "{\n    \"hello\" : \"world\"\n}"
+    }
+  ],
+  "transformation": "%dw 2.0\noutput application/xml\n---\n{\n  user: {\n    firstName: payload.user_firstname,\n    lastName: payload.user_lastName\n  }\n}"
+}

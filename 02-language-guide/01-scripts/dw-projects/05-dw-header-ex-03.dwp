@@ -1,0 +1,9 @@
+{
+  "inputs": [
+    {
+      "mimeType": "application/json",
+      "input": "{\n    \"hello\" : \"world\"\n}"
+    }
+  ],
+  "transformation": "%dw 2.0\noutput application/xml\n\nns ns0 http://www.abc.com\nns ns1 http://www.123.com\n---\n{\n    ns0#myroot: {\n         ns1#secondroot: \"hello world\"\n    }\n}"
+}

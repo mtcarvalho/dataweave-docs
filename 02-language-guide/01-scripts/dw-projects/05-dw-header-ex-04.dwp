@@ -1,0 +1,9 @@
+{
+  "inputs": [
+    {
+      "mimeType": "application/json",
+      "input": "{\n    \"name\": \"max\",\n    \"lastName\": \"the mule\"\n}"
+    }
+  ],
+  "transformation": "%dw 2.0\noutput application/json\nfun toUser(user) = {firstName: user.name, lastName: user.lastName}\n---\n{\n  user: toUser(payload)\n}"
+}

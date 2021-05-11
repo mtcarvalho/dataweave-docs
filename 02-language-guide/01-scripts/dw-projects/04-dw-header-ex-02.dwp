@@ -1,0 +1,9 @@
+{
+  "inputs": [
+    {
+      "mimeType": "application/json",
+      "input": "{\n    \"price\": 1.00\n}"
+    }
+  ],
+  "transformation": "%dw 2.0\nvar conversionRate=13.15\noutput application/json\n---\n{\n price_dollars: payload.price,\n price_localCurrency: payload.price * conversionRate\n}"
+}

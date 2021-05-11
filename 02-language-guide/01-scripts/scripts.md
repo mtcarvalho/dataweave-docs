@@ -11,7 +11,7 @@
             ```
             <set-variable value="#[now()]" variableName="timestamp" doc:name="Set timestamp" />
             ```
-- You can also store DW code in external files (`.dwl`), and read them into other DW scripts. 
+- You can also store DW code in [external files](#dwl-file) (`.dwl`), and read them into other DW scripts. 
     - Thus, you can **factor** DW code into modules (libraries) of reusable functions that can be shared by all the components in a Mule app.
 
 ## [The Structure of DataWeave Scripts](../language-guide.md#dw-script)
@@ -61,7 +61,108 @@
 ### Including Headers in Inline DataWeave Scripts
 
 - You can include it by flattening all the lines in the (small) DW script into a single line. Example:
+
     ```
     <set-payload value="#[output application/xml --- { myroot: payload } ]" doc:name="Set Payload" />
     ```
+
+## DataWeave Body
+
+- Example:
+
+```
+    %dw 2.0
+    output application/xml
+    ---
+    payload                     # the entire input payload is transformed 
+                                # to XML and it is given as output
+```
+
+## Errors: Scripting vs Formatting Errors
+
+- A DataWeave script can throw errors due to DataWeave **coding errors** and due to **formatting errors**.
+
+- A good approach to the creation of a script is to normalize the input to the JSON-like `application/dw` format. 
+    - If the transformation is successful, then the error is likely a **formatting error**. 
+    - If it is unsuccessful, then the error is a **coding error**.
+
+- Example:   
+
+    Given the below JSON input, transform and output it as XML:
+
+    ```
+    {
+        "size" : 1,
+        "person": {
+        "name": "Yoda"
+        }
+    }
+    ```
+
+    First, you can output it as `application/dw` format:
+
+    ```
+    %dw 2.0
+    output application/dw
+    ---
+    payload
+    ```
+
+    Which successfully outputs from the JSON input example:
+
+    ```
+    {
+        size: 1,
+        person: {
+            name: "Yoda"
+        }
+    }
+    ```
+
+    If you try to replace `application/dw` to `application/xml`, you'll get `Unexpected internal error`. This happened because XML requires a single root node. Thus, you'll have to create a node, then DW will output as XML successfully:
+
+    ```
+    %dw 2.0
+    output application/xml
+    ---
+    {
+        "myroot" : payload
+    }
+    ```
+
+## DataWeave Comments
+
+- Comments that use a Java-like syntax are accepted by DataWeave.
+
+```
+%dw 2.0
+output application/json
+---
+/* Multi-line
+ * comment syntax */
+payload
+// Single-line comment syntax
+```
+
+**Warning**: To avoid possible errors in Anypoint Studio, use the multi-line comment syntax(/*comment here*/) if the first line in the body of your DataWeave script is a comment. Subsequent script comments can use any syntax (//comment or /*comment*/)
+
+## Escape Special Characters
+
+- In DataWeave, you use the backslash (`\`) to escape special characters that you are using in an input string.
+
+- The input strings in the DataWeave scripts escape special characters, while the output escapes in accordance with the requirements of the output format, which can vary depending on whether it is `application/json`, `application/xml`, `application/csv`, or some other format.
+
+## Rules for Declaring Valid Identifiers
+
+- It **must begin with a letter of the alphabet** (a-z), either lowercase or uppercase.
+
+- After the first letter, the name can contain any combination of **letters, numbers, and underscores (_)**.
+
+- The name **cannot** match any DW **reserved** keyword.
+
+- [Reserved Keywords](https://docs.mulesoft.com/mule-runtime/4.3/dataweave-language-introduction#reserved-keywords) section contains a complete list.
+
+## dwl File
+
+- You can specify DW scripts in a .dwl file. In Studio projects, your script files are stored in `src/main/resources`.
 

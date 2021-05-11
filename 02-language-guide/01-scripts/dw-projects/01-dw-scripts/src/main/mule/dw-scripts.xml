@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+	<flow name="simple-inline-dw-script" doc:id="4adaa19b-f90d-44cd-9818-0a3c3ca8c2bb" >
+		<set-variable value="#[now()]" variableName="timestamp" doc:name="Set timestamp" />
+		<set-payload value="#[output application/xml --- { myroot: payload } ]" doc:name="Set Payload" />
+	</flow>
+</mule>
