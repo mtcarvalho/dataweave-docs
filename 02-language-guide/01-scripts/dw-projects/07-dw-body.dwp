@@ -1,0 +1,9 @@
+{
+  "inputs": [
+    {
+      "mimeType": "application/json",
+      "input": "{\n    \"message\": \"Hello world!\"\n}"
+    }
+  ],
+  "transformation": "%dw 2.0\noutput application/xml\n---\npayload"
+}

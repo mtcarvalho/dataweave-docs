@@ -1,0 +1,9 @@
+{
+  "inputs": [
+    {
+      "mimeType": "application/json",
+      "input": "{\n    \"hello\" : \"world\"\n}"
+    }
+  ],
+  "transformation": "%dw 2.0\noutput application/json\n---\n/* Multi-line\n * comment syntax */\npayload\n// Single-line comment syntax"
+}

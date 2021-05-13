@@ -1,0 +1,9 @@
+{
+  "inputs": [
+    {
+      "mimeType": "application/json",
+      "input": "{\n    \"size\" : 1,\n    \"person\": {\n      \"name\": \"Yoda\"\n    }\n}"
+    }
+  ],
+  "transformation": "%dw 2.0\noutput application/xml\n---\n{\n    \"myroot\" : payload\n}"
+}
