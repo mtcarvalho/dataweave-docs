@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="8b6e1a1b-88c1-418b-93b4-18408db4803c" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<flow name="dwl-fileFlow"
+		doc:id="9318066b-c449-4a0d-a86d-1b2c6db1ae71">
+		<http:listener doc:name="Listener"
+			config-ref="HTTP_Listener_config" path="/test">
+			<http:response>
+				<http:body><![CDATA[#[${file::transform.dwl}]]]></http:body>
+			</http:response>
+		</http:listener>
+		<choice doc:name="Choice">
+			<when expression="#[${file::someFile.dwl}]">
+				<set-payload value="It's greater than 4!"
+					doc:name="Set Payload" />
+			</when>
+			<otherwise>
+				<set-payload value="It's less than 4!"
+					doc:name="Set Payload" />
+			</otherwise>
+		</choice>
+	</flow>
+	<flow name="dwl-fileFlow1" doc:id="b5b9698a-4197-48fd-ac24-97094c66156d" >
+		<logger level="INFO" doc:name="Logger" doc:id="fbc29a6a-da1f-412a-ad91-1e4bd77fcda4" message="${file::someFile.dwl}"/>
+	</flow>
+
+
+
+</mule>

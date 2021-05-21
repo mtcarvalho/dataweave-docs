@@ -1,0 +1,9 @@
+{
+  "inputs": [
+    {
+      "mimeType": "application/json",
+      "input": "{\n    \"hello\" : \"world\"\n}"
+    }
+  ],
+  "transformation": "%dw 2.0\noutput application/xml\n---\n{\n  xmlExample:\n  {\n     \"a\": \"something\",\n     \"b\": \"dollar sign (\\$)\",\n     \"c\": 'single quote (\\')',\n     \"d\": \"double quote (\\\")\",\n     \"e\": `backtick (\\`)`\n   }\n}"
+}

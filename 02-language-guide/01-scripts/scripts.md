@@ -152,6 +152,54 @@ payload
 
 - The input strings in the DataWeave scripts escape special characters, while the output escapes in accordance with the requirements of the output format, which can vary depending on whether it is `application/json`, `application/xml`, `application/csv`, or some other format.
 
+- JSON output escapes the double quotation marks to make the output valid JSON but does not escape the other characters.
+
+    This example:
+
+    ```
+    %dw 2.0
+    //
+    ---
+    {
+        example:
+        {
+            "a": "something",
+            "b": "dollar sign (\$)",
+            "c": 'single quote (\')',
+            "d": "double quote (\")",
+            "e": `backtick (\`)`
+        }
+    }
+    ```
+
+    with header `output application/json`, the output is:
+
+
+    ```
+    {
+        "example": {
+            "a": "something",
+            "b": "dollar sign ($)",
+            "c": "single quote (')",
+            "d": "double quote (\")", // escaped string
+            "e": "backtick (`)"
+        }
+    }
+    ```
+
+    and with header `output application/xml`, the output is:
+
+    ```
+    <?xml version='1.0' encoding='UTF-8'?>
+    <example>
+        <a>something</a>
+        <b>dollar sign ($)</b>
+        <c>single quote (')</c>
+        <d>double quote (")</d> // no escaped string
+        <e>backtick (`)</e>
+    </example>
+    ```
+
 ## Rules for Declaring Valid Identifiers
 
 - It **must begin with a letter of the alphabet** (a-z), either lowercase or uppercase.
@@ -166,3 +214,22 @@ payload
 
 - You can specify DW scripts in a .dwl file. In Studio projects, your script files are stored in `src/main/resources`.
 
+- In the Mule app XML, you can use the `${file::filename}` syntax to send a script in a dwl file through any XML tag that expects an expression. 
+
+    - For example, see the `when expression="${file::someFile.dwl}"` in the Choice router here:
+
+    ```
+    <http:listener doc:name="Listener" config-ref="HTTP_Listener_config" path="/test">
+    <http:response >
+        <http:body ><![CDATA[#[${file::transform.dwl}]]]></http:body>
+    </http:response>
+    </http:listener>
+    <choice doc:name="Choice">
+    <when expression="${file::someFile.dwl}" >
+        <set-payload value="It's greater than 4!" doc:name="Set Payload"  />
+    </when>
+    <otherwise >
+        <set-payload value="It's less than 4!" doc:name="Set Payload" />
+    </otherwise>
+    </choice>
+    ```

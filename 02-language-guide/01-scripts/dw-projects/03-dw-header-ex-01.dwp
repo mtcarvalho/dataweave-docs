@@ -5,5 +5,5 @@
       "input": "{\n    \"hello\" : \"world\"\n}"
     }
   ],
-  "transformation": "%dw 2.0\nimport * from dw::core::Arrays\nvar myVar=13.15\nfun toUser(obj) = {\n  firstName: obj.field1,\n  lastName: obj.field2\n}\ntype Currency = String { format: \"##\"}\nns ns0 http://www.abc.com\noutput application/xml\n---\nns0#\"output\": { // escaped reserved word with quotes\n\t\"var\": myVar,\n    user: toUser({\n        field1: \"name\",\n        field2: \"lastname\"\n    }),\n    price: 10000.01 as Currency\n}"
+  "transformation": "%dw 2.0\nimport * from dw::core::Arrays\nvar myVar=13.15\nfun toUser(obj) = {\n  firstName: obj.field1,\n  lastName: obj.field2\n}\ntype Currency = String { format: \"##\"}\nns ns0 http://www.abc.com\noutput application/xml\n---\nns0#\"output\": { // escaped reserved word with quotes\n    \"var\": myVar,\n    user: toUser({\n        field1: \"name\",\n        field2: \"lastname\"\n    }),\n    price: 10000.01 as Currency\n}"
 }
